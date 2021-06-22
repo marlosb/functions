@@ -35,14 +35,14 @@ def get_model(model_path, container_url, key):
     blob_client = container_client.get_blob_client(
                                                  blob = last_model_name)
     # download model to local disk
-    with open(last_model_name, 'wb') as my_blob:
+    with open('/tmp/' + last_model_name.split('/')[-1], 'wb') as my_blob:
         blob_data = blob_client.download_blob()
         blob_data.readinto(my_blob)
     # close handles
     blob_client.close()
     container_client.close()
     # read model from disk
-    model = pd.read_pickle(last_model_name)
+    model = pd.read_pickle('/tmp/' + last_model_name.split('/')[-1])
     
     return model, last_model_name
 
