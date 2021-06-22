@@ -3,3 +3,4 @@ models/
 notebooks/
 .vscode/
 auto_venv/
+__pycache__/
