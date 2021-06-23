@@ -17,10 +17,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
     start_time = datetime.datetime.now()
 
+    if 'x-forwarded-for' in headers_list:
+        logging.info(f'Requester IP address is: \
+                     {req.headers.get("x-forwarded-for")}')
+
     try:
         input_dict = req.get_json()
     except ValueError:
-        return func.HttpResponse("No input data!", status_code=200)
+        return func.HttpResponse("No input data!", status_code=400)
 
     model_package, model_version = get_model(model_path, container_url, 
                                             key)
@@ -28,7 +32,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         score = get_score(input_dict, model_package)
     except KeyError:
         return func.HttpResponse("Wrong input parameters", 
-                                 status_code=200)
+                                 status_code=406)
 
     headers_list = [i for i in req.headers.keys()]
 
