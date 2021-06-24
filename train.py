@@ -49,7 +49,7 @@ def read_input_data(data_path, data_file, container_url, key):
                                                           + data_file)
     
     # download blob to local disk
-    with open(data_path + data_file, 'wb') as my_file:
+    with open('/tmp/' + data_file, 'wb') as my_file:
         blob_data = blob_client.download_blob()
         blob_data.readinto(my_file)
         
@@ -58,7 +58,7 @@ def read_input_data(data_path, data_file, container_url, key):
     container_client.close()
     
     # read file to DataFrame
-    dataframe = pd.read_excel(data_path + data_file)
+    dataframe = pd.read_excel('/tmp/' +  data_file)
     
     return dataframe
 
@@ -67,7 +67,7 @@ def save_model(model, model_path, model_name, container_url, key):
         pickle file,  then, upload this file to Azure Blob Storage
     '''
     # write model to local disk
-    model.to_pickle(model_path + model_name)
+    model.to_pickle('/tmp/' + model_name)
     
     # instanciate containder client
     container_client = ContainerClient.from_container_url(
@@ -79,7 +79,7 @@ def save_model(model, model_path, model_name, container_url, key):
     
     # first checks if file already exists (same name) before upload it
     if not blob_client.exists():
-        with open (model_path + model_name, 'rb') as my_file:
+        with open ('/tmp/' + model_name, 'rb') as my_file:
             blob_client.upload_blob(my_file)
             
     # close handles
